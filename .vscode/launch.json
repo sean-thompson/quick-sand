@@ -1,0 +1,42 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug executable 'quick-sand'",
+            "cargo": {
+                "args": [
+                    "build",
+                    "--bin=quick-sand",
+                    "--package=quick-sand"
+                ],
+                "filter": {
+                    "name": "quick-sand",
+                    "kind": "bin"
+                }
+            },
+            "args": [],
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug unit tests in executable 'quick-sand'",
+            "cargo": {
+                "args": [
+                    "test",
+                    "--no-run",
+                    "--bin=quick-sand",
+                    "--package=quick-sand"
+                ],
+                "filter": {
+                    "name": "quick-sand",
+                    "kind": "bin"
+                }
+            },
+            "args": [],
+            "cwd": "${workspaceFolder}"
+        }
+    ]
+}

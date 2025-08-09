@@ -4,10 +4,11 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-wgpu = "0.18"
+wgpu = "0.20"
 winit = "0.29"
 nalgebra = "0.32"
 bytemuck = { version = "1.14", features = ["derive"] }
 env_logger = "0.10"
 log = "0.4"
 pollster = "0.3"
+raw-window-handle = "0.6"

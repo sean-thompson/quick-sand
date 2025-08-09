@@ -22,12 +22,13 @@ A high-performance Rust demo that simulates falling particles using GPU accelera
 
 ```toml
 [dependencies]
-wgpu = "0.18"           # Cross-platform GPU abstraction
+wgpu = "0.20"           # Cross-platform GPU abstraction (updated from yanked 0.18)
 winit = "0.29"          # Window creation and event handling
 nalgebra = "0.32"       # Linear algebra for physics calculations
 bytemuck = "1.14"       # Safe casting for GPU buffers
 env_logger = "0.10"     # Logging for debugging
 pollster = "0.3"        # Async runtime for wgpu initialization
+raw-window-handle = "0.6" # Window handle management for surface creation
 ```
 
 ### Core Systems
@@ -44,8 +45,9 @@ pollster = "0.3"        # Async runtime for wgpu initialization
 
 1. **Project Setup** ✅
    - ✅ Initialize Rust project with proper dependency configuration
-     - Created `Cargo.toml` with wgpu 0.18, winit 0.29, nalgebra 0.32, bytemuck 1.14
+     - Created `Cargo.toml` with wgpu 0.20, winit 0.29, nalgebra 0.32, bytemuck 1.14
      - Added pollster 0.3 for async runtime support in wgpu initialization
+     - Added raw-window-handle 0.6 to resolve surface lifetime issues
      - Dependencies chosen for cross-platform GPU rendering and efficient data handling
    - ✅ Set up basic logging and error handling
      - Added env_logger 0.10 and log 0.4 for debug output during development

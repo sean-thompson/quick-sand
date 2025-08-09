@@ -1,5 +1,4 @@
 use bytemuck::{Pod, Zeroable};
-use nalgebra::Vector2;
 
 #[repr(C)]
 #[derive(Clone, Copy, Debug, Pod, Zeroable)]

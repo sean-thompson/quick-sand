@@ -1,6 +1,8 @@
 use std::mem;
+use std::sync::Arc;
 use wgpu::util::DeviceExt;
 use winit::window::Window;
+use raw_window_handle::{HasWindowHandle, HasDisplayHandle};
 
 use crate::physics::Particle;
 
@@ -11,6 +13,7 @@ struct Uniforms {
 }
 
 pub struct Renderer {
+    _window: Arc<Window>,
     surface: wgpu::Surface<'static>,
     device: wgpu::Device,
     queue: wgpu::Queue,
@@ -24,7 +27,7 @@ pub struct Renderer {
 }
 
 impl Renderer {
-    pub async fn new(window: &Window) -> Self {
+    pub async fn new(window: Arc<Window>) -> Self {
         let size = window.inner_size();
 
         let instance = wgpu::Instance::new(wgpu::InstanceDescriptor {
@@ -32,7 +35,15 @@ impl Renderer {
             ..Default::default()
         });
 
-        let surface = instance.create_surface(window).unwrap();
+        // Create surface using raw window handle to avoid lifetime issues
+        let surface = unsafe {
+            let window_handle = window.window_handle().unwrap();
+            let display_handle = window.display_handle().unwrap();
+            instance.create_surface_unsafe(wgpu::SurfaceTargetUnsafe::RawHandle {
+                raw_display_handle: display_handle.as_raw(),
+                raw_window_handle: window_handle.as_raw(),
+            }).unwrap()
+        };
 
         let adapter = instance
             .request_adapter(&wgpu::RequestAdapterOptions {
@@ -158,6 +169,7 @@ impl Renderer {
                 module: &shader,
                 entry_point: "vs_main",
                 buffers: &[],
+                compilation_options: wgpu::PipelineCompilationOptions::default(),
             },
             fragment: Some(wgpu::FragmentState {
                 module: &shader,
@@ -167,6 +179,7 @@ impl Renderer {
                     blend: Some(wgpu::BlendState::ALPHA_BLENDING),
                     write_mask: wgpu::ColorWrites::ALL,
                 })],
+                compilation_options: wgpu::PipelineCompilationOptions::default(),
             }),
             primitive: wgpu::PrimitiveState {
                 topology: wgpu::PrimitiveTopology::TriangleList,
@@ -187,6 +200,7 @@ impl Renderer {
         });
 
         Self {
+            _window: window,
             surface,
             device,
             queue,

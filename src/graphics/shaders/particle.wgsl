@@ -28,17 +28,21 @@ var<storage, read> particles: array<Particle>;
 fn vs_main(input: VertexInput) -> VertexOutput {
     let particle = particles[input.instance_index];
     
-    // Create a quad for each particle (2 triangles = 6 vertices)
-    let vertices = array<vec2<f32>, 6>(
-        vec2<f32>(-1.0, -1.0),
-        vec2<f32>( 1.0, -1.0),
-        vec2<f32>(-1.0,  1.0),
-        vec2<f32>( 1.0, -1.0),
-        vec2<f32>( 1.0,  1.0),
-        vec2<f32>(-1.0,  1.0),
-    );
-    
-    let vertex_pos = vertices[input.vertex_index];
+    // Generate vertex position based on vertex index using conditionals
+    var vertex_pos: vec2<f32>;
+    if (input.vertex_index == 0u) {
+        vertex_pos = vec2<f32>(-1.0, -1.0);
+    } else if (input.vertex_index == 1u) {
+        vertex_pos = vec2<f32>( 1.0, -1.0);
+    } else if (input.vertex_index == 2u) {
+        vertex_pos = vec2<f32>(-1.0,  1.0);
+    } else if (input.vertex_index == 3u) {
+        vertex_pos = vec2<f32>( 1.0, -1.0);
+    } else if (input.vertex_index == 4u) {
+        vertex_pos = vec2<f32>( 1.0,  1.0);
+    } else {
+        vertex_pos = vec2<f32>(-1.0,  1.0);
+    }
     
     // Scale by particle size
     let scaled_pos = vertex_pos * particle.size;

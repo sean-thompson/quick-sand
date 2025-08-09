@@ -47,15 +47,16 @@ src/
 ```
 
 ## Implementation Phases
-1. **Foundation**: Basic window + GPU context + static particle rendering
+1. **Foundation**: Basic window + GPU context + static particle rendering ✅ **COMPLETE**
 2. **Core Systems**: Physics simulation + spatial optimization + compute shaders
 3. **Polish**: Visual effects + user interaction + performance tuning
 
 ## Dependencies Rationale
-- `wgpu 0.18`: Modern GPU abstraction with compute shader support
+- `wgpu 0.20`: Modern GPU abstraction with compute shader support (updated from yanked 0.18)
 - `winit 0.29`: Cross-platform windowing and input
 - `nalgebra 0.32`: Linear algebra for physics calculations
 - `bytemuck 1.14`: Safe casting for GPU buffer data
+- `raw-window-handle 0.6`: Window handle management for surface creation
 
 ## Performance Considerations
 - Use compute shaders for physics to leverage GPU parallelism
@@ -65,6 +66,8 @@ src/
 
 ## Common Issues
 - **Shader compilation**: Ensure WGSL syntax is correct, use wgpu validation layers
+- **Dynamic indexing**: Use conditional statements instead of array indexing with variables
+- **Surface lifetime**: Use Arc<Window> with raw window handles to avoid lifetime issues
 - **GPU buffer overflow**: Monitor particle count vs buffer capacity
 - **Frame timing**: Use VSync and proper frame pacing
 - **Windows line endings**: Git will handle CRLF conversion automatically

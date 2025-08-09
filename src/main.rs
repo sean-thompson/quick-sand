@@ -3,6 +3,7 @@ mod physics;
 
 use graphics::Renderer;
 use physics::{create_test_particles};
+use std::sync::Arc;
 use winit::{
     event::{Event, WindowEvent},
     event_loop::{ControlFlow, EventLoop},
@@ -14,13 +15,13 @@ fn main() {
     log::info!("Starting Quick Sand particle simulation");
 
     let event_loop = EventLoop::new().unwrap();
-    let window = WindowBuilder::new()
+    let window = Arc::new(WindowBuilder::new()
         .with_title("Quick Sand - Particle Simulation")
         .with_inner_size(winit::dpi::LogicalSize::new(800, 600))
         .build(&event_loop)
-        .unwrap();
+        .unwrap());
 
-    let mut renderer = pollster::block_on(Renderer::new(&window));
+    let mut renderer = pollster::block_on(Renderer::new(window.clone()));
 
     // Create static particles for foundation phase
     let particles = create_test_particles();
@@ -28,14 +29,15 @@ fn main() {
 
     log::info!("Initialized with {} particles", particles.len());
 
-    event_loop.run(move |event, elwt| {
+    let window_for_event_loop = window.clone();
+    let _ = event_loop.run(move |event, elwt| {
         elwt.set_control_flow(ControlFlow::Poll);
 
         match event {
             Event::WindowEvent {
                 ref event,
                 window_id,
-            } if window_id == window.id() => match event {
+            } if window_id == window_for_event_loop.id() => match event {
                 WindowEvent::CloseRequested => elwt.exit(),
                 WindowEvent::Resized(physical_size) => {
                     renderer.resize(*physical_size);
@@ -51,9 +53,9 @@ fn main() {
                 _ => {}
             },
             Event::AboutToWait => {
-                window.request_redraw();
+                window_for_event_loop.request_redraw();
             }
             _ => {}
         }
-    }).unwrap();
+    });
 }

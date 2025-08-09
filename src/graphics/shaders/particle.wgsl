@@ -10,6 +10,7 @@ struct VertexOutput {
 
 struct Particle {
     position: vec2<f32>,
+    _padding1: vec2<f32>,
     color: vec3<f32>,
     size: f32,
 }
@@ -51,7 +52,11 @@ fn vs_main(input: VertexInput) -> VertexOutput {
     let world_pos = scaled_pos + particle.position;
     
     // Convert to normalized device coordinates
-    let ndc_pos = (world_pos / uniforms.screen_size) * 2.0;
+    // Screen space: (0,0) top-left, (width,height) bottom-right
+    // NDC space: (-1,-1) bottom-left, (1,1) top-right
+    let ndc_x = (world_pos.x / (uniforms.screen_size.x * 0.5));
+    let ndc_y = -(world_pos.y / (uniforms.screen_size.y * 0.5)); // Flip Y axis
+    let ndc_pos = vec2<f32>(ndc_x, ndc_y);
     
     var output: VertexOutput;
     output.clip_position = vec4<f32>(ndc_pos, 0.0, 1.0);
